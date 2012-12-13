@@ -1,0 +1,4 @@
+#!/bin/sh
+./build
+./obvpp.py testy.obv
+./obvc testy.obv.pp

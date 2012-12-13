@@ -1,0 +1,6 @@
+#!/bin/sh
+
+FILES="errorReport.cmo util.cmo syntree.cmo parser.cmo lexer.cmo package.cmo \
+       main.cmo"
+
+ocamlc -o obvc $FILES

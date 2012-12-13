@@ -1,0 +1,88 @@
+Categories
+
+Cox's main concern was the maintainability of large code bases. Experience from the structured programming world had shown that one of the main ways to improve code was to break it down into smaller pieces. Objective-C added the concept of Categories to help with this process.
+
+A category collected method implementations into separate files. That way the programmer could place groups of related methods in its own "category" to make it more readable. For instance, one could create a "SpellChecking" category "on" the String object, collecting all of the methods related to spell checking into a single place.
+
+That might not sound like anything new, but one key aspect of the implementation is that the methods were added to the class at runtime. That means that the programmer can add categories to existing classes without them knowing about it. If the system you are supplied with does not contain a spell checker in its String implementation, you just add it.
+
+Combining categories with dynamic typing produces a synergy that results in tremendous flexibility that is largely unexpected in most programming systems. Consider Java: simply allowing String to have a checkSpelling method added isn't enough on its own, because the rest of your program won't allow you to call that new method - all methods must be known at compile time as a side effect of strong typing. Instead you must use helper objects, special proxy classes, or use the terrible visitor pattern, all of which add to the complexity and uglyness of the implementation.
+
+But the usefulness of categories goes further. Since any method can be "covered" by one in a category at runtime, you can in fact fix bugs in existing compiled binaries. Once you get used to having this, you can't live without it.
+
+A number of other languages have attempted to add this feature in a variety of ways. TOM took the Objective-C system to its logical conclusion and allowed for the addition of variables as well. Other languages have instead used prototype oriented solutions, the most notable being Self. 
+
+Other features
+
+ObjC in fact included a laundry-list of features that are still being added to other languages, or simply don't exist at all. These led from Cox's (and later, NeXT's) realization that there is considerably more to programming than the language. The system has to be usable and flexible as a whole in order to work in a real-world setting.
+
+    * All libraries are dynamically linked. This meant that large Objective-C programs were in fact quite small, because the library was already on the machine. Common today perhaps, but this is from the early 1980s when dynamic linking was fairly rare.
+    * Libraries can be supplied in multiple versions in a single file. Applications can choose to use a specific version (4.3.2), the latest version (which happens to be 5.2.1), or even the latest of a particular major release (anything from 4.x). Versioning problems like this continue to haunt other systems to this day, including Java and component object model.
+    * Code can be provided in multiple object formats for different platforms, in a single library. This avoids the need for a virtual machine entirely. Typical multi-platform Objective-C programs are smaller than most single-platform programs on other systems.
+    * Delegating methods to other objects at run-time is trivial. Simply add a category that changes the "second chance" method to forward the invocation to the delegate. Presto!
+    * Remote invocation is trivial. Simply add a category that changes the "second chance" method to serialize the invocation and forward it off.
+    * Swizzling allows for classes to change at runtime. Typically used for debugging where freed objects are swizzled into Zombies, whose only purpose is to report an error when someone calls them. Swizzling was also used in EOF to create database faults. 
+
+***
+
+Name?  Bellerophon?  Bel?  Objective ish a nice name, but it's also somewhat inconvenient...  Eh, stick with it.
+
+Some sort of static typing option would be nice...  Tricky to implement though.
+Main issue: a single untyped variable or return type or such could theoretically utterly defeat the compile-time checking, which basically means you HAVE no static typing.
+There's probably some way around this, but I can't see it.
+
+How does one optimize mathematical operations but still keep the flexibility to add new types such as Bignum or Ratio?
+Well, either have an explicit "add" method for the above instead of overloading operators, or make "+" call a method.  We COULD make it so the compiler optimized purely-numerical computations, but that would require the compiler knowing WHAT variables were numbers, which needs static typing.
+
+Hmm.  Maybe we CAN declare explicit types optionally...  To be effective it'd have to be for ALL values in a method though, but that can be done.  Yeah.  Then we can optimize the code by a) checking for basic number operations and inlining them, b) (maybe) checking whether an object understands a method and replacing the hashing function with a direct call.  The latter is a bit more iffy because it takes away some of the flexibility to manipulate methods at runtime, declaring message-forwarding and swizzling and categories and such.
+
+Instead of forbidding tabs, forbid mixed tabs and spaces?  Eh, maybe later.  The pre-processor is messy enough as it is.
+
+Static typing:
+var foo <- 10; can become var (foo: Int) <- 10;
+- foo bar bop: can become - (foo: Int) (bar: Float) (bop: Float):
+
+Passing a var type to any of these will invoke runtime typechecking...  Exception if it doesn't match, goes fine if it does.
+Or else passing a var works fine, and it just throws a DoesNotUnderstand at some point?  Hmmm...  The former seems the Right Thing, but the latter is more flexible.  No, the former, because that lets us swizzle method calls too.
+SHOULD we swizzle methodcalls?  Erm, maybe.  Start off with not doing it; just statically check that the methods exist.  If we don't, then yesh, don't check for types at runtime.
+It DOES inline mathematical and logical operations if it can though!
+
+(varname: XXX) means that varname can be XXX or any of it's subclasses.  Interfaces can work the same way.  This checking is only done when a static var is assigned to another static var.
+
+As well as inlining mathematics, inlining array and possibly class refs wouldn't be a bad idea either.
+
+
+Categories...  They basically pull method implementations into seperate files, which lets you add and override methods without recompiling the class itself.  Dynamically loaded.  Can not declare data.  Well.... why not?  No, you can't, because not only would the class not know how to deal with it, but other categories wouldn't either, and it might get clobbered somewhere.  So no go.
+Hmm.  Categories are sorta a bit like packages.  Packages group together classes and data into units within programs, categories group methods together within classes.  Think a bit about Ruby-ish mixins here, 'cause...
+Oh well, LEAVE IT for now.  KEEP IT SIMPLE, STUPID.
+In GCC's ObjC implementation, categories have to be statically linked.  But still, 'tis an interesting idea...  Later.
+
+
+List slices?
+Singleton methods?  Maybe, but don't knock yerself out over it.  Categories can help here.
+A Ratio number type would be nice, but it's not critical.  I can write it later in Objective if I want.  :-)
+Hrfm...  Maybe use ObjC/Smalltalk's methodcall syntax?  When you think about it, it's really kinda nice...  (foo 0 bar=10 bop=20) becomes (foo: 0 bar: 10 bop: 20)  Hmmmmm.  Maybe in a later version.
+Docstrings, perhaps?  Preserved in package interfaces, at least?
+Some sort of C interface wrapper would be nice, without having to go through Ocaml.  It's hardly necessary at the moment though.  An Ocaml interface would be much easier and nearly as useful.
+
+Replace $ with --?  //?  #? ;;?
+
+
+
+Ghrm.  Make the Objective runtime more powerful?  An environment instead of just a runtime, with it's own loader and dynamic linker, direct access to the compiler and state...  More similar to Smalltalk, Lisp and Poplog than mere C or Objective C.  Hmmm...  It might be worth a shot.
+The ADVANTAGE of such things is that you can have arbitrarily complete control over the environment and the things it does, and manipulate such things in a very nifty manner.
+The DISADVANTAGE of such things is that to port a program you must port the entire environment, runtime, etc.  But really, you must do that anyway; Unices just have lots of C environment built in.  Hmmm.  It may be worth it.
+So instead of compiling to Ocaml and linking statically, it compiles to it's own type of bytecode or native code DLL, jams it into memory, accesses it dynamically, and so on.  Re-compiling overwrites the old object, and you have a REP loop or some such thing that can give intimate access with the runtime.
+The HARD part would be turning Objective into assembly, which would be tricksy but relatively straightforward, and then either having our own assembler or using NASM or some such thing.  
+Another hard thing is that such a deal utterly ignores the OS's process control, which is a rather silly thing to do, as the OS gives us process control for a reason.  Without it, we have to write our own threads and scheduler and such, and that's just annoying, not to say stupid.
+So.  We want everything to share one environment, but we also want seperate tasks to be seperate processes.  In Linux, this means several executables.  Or a forked executable, yes!  But...  A forked executable keeps the same code, but different data spaces.  Here, most of the code IS held as data, in the heap.  Hrm.  Well, this can be a good thing, because it means one stray process can't nuke everything, but it can be a bad thing, because it means one process can't play with another as much.  Hmm.
+So what I'm thinking of right now is kinda a client-server dealie.  The program server fires up and spawns a bootstrap program, and gives it a pipe to listen on.  The bootstrap does whatever it does, and communicates on the pipe when it needs the program server to start another program.  When it starts a program, the prog server forks, and the child gets a pipe to talk to it, and the child then has the appropriate bits and pieces loaded and jumps to the appropriate start function.  It can be done, but...  Efficiency MAY be an issue, but not a lot we can do about that here; Linux forks fast at least.  But it's reasonably flexible and secure and powerful at the same time, and it uses the nice facilities the OS gives us.
+
+Well, let's start with a basic Ocaml-compiled system; we can play with it later if needs be.  What would be really nice, as well as genuinely new, would be if we could set it up to either run a program dynamically using the runtime, or statically link and compile the whole shebang.  And now that I think of it, we may be able to use Linux's shared library system to help with this.
+
+Hrm...  We may actually be able to do this, or something like it, without a explicit shared environment, instead just using what Linux gives regular processes.  Hmmm...
+
+
+***
+
+http://www.dadgum.com/james/performance.html

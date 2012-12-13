@@ -1,0 +1,466 @@
+New language.  Again.  High-level.  Keep it SIMPLE, stupid!
+So, it's kinda Objective C without the C.  Just call it Objective?  Hmm, not bad.  I kinda like it.  Triple-pun.  Objects, goals, and ObjC minus the C...
+
+OO.  Single-dispatch.  Dynamic, a la ObjC.  Interfaces.  Dynamic typing.  Everything ish an object.  Most things, at least.  One should be able to register new methods at runtime.
+Package system!
+GC, of course.
+Keyword and optional args.  Can those be checked statically?
+Optional static typing.
+Classes are objects too...  Semi-direct access to class properties?  Methods, variables, etc.  Hmm, maybe.  So a Class object describes the instances of a class, and a Metaclass object describes a Class.  It can be useful to do things like allocate objects off a list, co-ordinate communication between objects, etc.
+Exceptions!
+Before and after methods?  Whoppers?
+NO AUTO-DEFINED GETTER OR SETTER METHODS.  At least, not yet.  KEEP IT SIMPLE, STUPID!
+Control structures and branching are NOT methods.  Mathematical and binary operations ARE, or at least act like it, but are inlined by the compiler.  They're also infix.
+
+So, compilation is thus:
+*Parse
+*Import interface definitions
+*Check the type of any statically-declared methods or vars.  NO INFERENCE.
+*Check that methods exist for statically-declared methods?
+*Generate selectors (hashes, basically) for methods
+*Generate code
+A method calls is thus:
+*Check the object's class to see if the method exists (method dispatch table, function handles, isa/superclass tables)
+*Check the type of it's args, if possible.
+*Call it
+
+Lispy self-compilation?  Extensible classes?  Maybe.  Think in terms of a REP loop...
+Debugger, too.  That could be done quite nicely, just by fiddling the runtime a bit.
+
+No, no first-class functions...  Blocks, possibly.  Think more ObjC-ish than Lisp-ish.  Messages are sent to objects, the objects do something with them.
+Blocks, then, 'cause I still want functions like removeIf.
+Have eval-ish access to the compiler, perhaps?  That might make blocks easier/more powerful...  Later, maybe.
+
+Muahaha!  Callable objects, a la D and Ruby!  ^_^
+That makes function objects kinda easier...  unfortunately Java-ish though.
+
+Hmm.  Basically, the thing ish, I want to be able to inline anonymous functions and capture environments.  Blocks, a la Smalltalk?  Hmm.
+
+
+The neat thing about typeclasses is that any type that implements a certain interface is implicitly an object of that typeclass.  But oh well.
+
+Lispy syntax though, and maybe macros...
+Macros would ROCK there...  Think about it!
+
+It is lisp if it has:
+lambda
+quote
+if
+cons
+car
+cdr
+define/set!
+begin
+eq?
+apply/funcall
+
+---
+(class List ()
+   (item nil)
+   (next nil)
+   
+   ; Methods and members have different namespaces or ne?
+   ; It sorta depends on the functional aspects of it, really...
+   (method car () item)
+   (method cdr () next)
+   (method insert (itm plc)
+      (if (= plc 1)
+         (let ((nw (new List itm (cdr next))))
+            (set next nw))
+         (insert nxt itm (- plc 1))))
+   
+   ...)
+---
+Song-y syntax instead...?
+---
+
+---
+
+Hrm.  I find the former kinda easier to read, but oh well.  We'll see.
+
+Okay, so.
+
+$ Introduction
+{- Block comment, of course. 
+   Python-ish indent blocks.
+-}
+class Fib ():
+   $ "+" is quicker to type than "method".
+   + fib x:
+      if x < 2:
+         1
+      else:
+         (fib self (x - 1)) + (fib self (x - 2))
+
+$ No "Main" method or class, at the moment.  Just inline,
+$ a la Python or Ocaml.
+format "~A~%" (fib 40)
+
+
+$ Intro to objects and data structs.
+$ Returning values is implicit.  Method syntax is:
+$ "method object args ..."
+$ Branching and iteration are NOT METHODS!!!
+$ Math and comparison operations ARE, but are optimized for
+$ boolean and numeric primatives.
+$ Current class is "self".  Superclass is "super".
+
+class List ():
+   $ All variables are preeetty much public.
+   var item
+   var next
+   
+   $ ~arg means arg ish optional/keyworded; default if not given.
+   $ Default default ish nil.
+   $ "init" is called when a new object is created.
+   $ + designates class methods, - instance methods.
+   - init ~itm ~nxt:
+      item <- itm
+      next <- nxt
+
+   
+   - insert itm plc:
+      if plc = 1:
+         var nw <- new List itm (cdr next)
+         next <- nw
+      elif next = nil:
+         next <- new List itm nil
+      else:
+         insert nxt itm (plc - 1)
+   
+   - length ~ln=1:
+      if next = nil:
+         ln
+      else:
+         (length next) + 1
+   
+   - append n:
+      if next = nil:
+         next <- n
+      else:
+         append next n
+
+   - cons n:
+      new List n self
+
+
+$ Collections: Lists/arrays [] and assoc lists/hashtables [||]
+$ Iteration, too...
+$ C-ish break, continue and return statements act as you expect.
+$ "return" isn't strictly necessary, but can be useful.
++ concat lx ly:
+   var ln <- new Array (lx.len + ly.len)
+   for x = 0 to (lx.len - 1):
+      ln[x] <- lx[x]
+   for x = lx.length to (lx.len + ly.len - 1):
+      ln[x] <- ly[x]
+   ln
+
+$ ^ is a special operator generally used for concatenation.
+$ It exists for lists, strings and dictionaries, so.
+
+$ foreach works for arrays and dictionaries.
+$ Dictionaries are printed in arbitrary order.
+$ Dictionaries are eminantly Python-ish.
++ printCollection l:
+   if isArray l:
+      print "Array: ["
+   elif isDict l:
+      print "Dictionary: [|"
+   else:
+      raise InvalidArg "Expected array or dictionary!"
+   
+   foreach x in l:
+      format "~a, " x
+   
+   if isArray l:
+      println "]"
+   elif isDict l:
+      println "|]"
+
+
+class SongBook ():
+   var songs <- [||]
+   var numsongs <- 0
+   
+   - insert name file:
+      songs[name] <- file
+      inc numsongs
+   
+   - remove name:
+      songs[name] <- nil
+      dec numsongs
+   
+   - get name:
+      songs[name]
+   
+   - numSongs:
+      numsongs
+   
+   - printSongs:
+      $ x becomes key, y becomes val.
+      $ If only one var is specified, it is set to the value.
+      format "~A songs:~%" numsongs
+      foreach xin songs:
+         format "~A~t~A~%" x x[y]
+
+   - hasSong name:
+      foreach x, y in songs:
+         if (x = name) or (y = name):
+            return true
+      false
+   
+   - findSong name:
+      foreach x, y in songs:
+         if (contains x name) or (contains y name):
+            return x
+      raise new NotFoundException "~A not found in songbook!~%" name
+
+$ Declaring dicts inline.
+var x <- [| x : y; y : z; z : x; |]
+
+
+$ Loops!
++ beer:
+   for i <- 99 to 0 by -1:
+      format "~a bottles of beer on the wall, ~a bottles of beer!~%" i i
+      format "Take one down, pass it around,~%"
+      format "~a bottles of beer on the wall!~%" (i - 1)
+   format "No more beer...~%"
+
+$ Numbers!
+$ Numbers are easy.  Song-ish.  Binary, octal, hex.
+12
+0b1100
+0o14
+0xC
+
+$ Equality!
+$ = is structural equality.  == is physical equality.
+$ = is defined by the method "eq"; the default behavior is to
+$ just compare all instance vars.
+$ Not equality is /= or /==
+$ Class membership is generally done with the "isa" method...
+$ Methods take numbers as call-by-val, all else as call-by-ref
+x <- Object new
+y <- x
+z <- Object new
+x = y           $ True
+x == y          $ True
+x = z           $ True
+x == z          $ False
+eq x y          $ True
+eq x z          $ False
+
+
+$ Exceptions!
+$ Fairly simple try-with-finally.
++ foo:
+   a <- new Exception 10
+   raise a
+
++ bar:
+   try:
+      foo
+   with (e : Exception):
+      format "Exception caught: ~A~%" e
+   finally:
+      println "This always happens"
+
+
+$ Packages!
+$ Packages are like Dancer/Song.  They default to the name of the
+$ file, but that can be overrided to, say, put many packages in a file
+$ or many files in a package.
+$ I am not quite sure yet how these are going to relate to libraries
+$ and/or the filesystem and/or the linker.
+$ It's probably going to be fairly Song-ish.
+$ Packages include class definitions, class objects and 
+$ data such as globals and constants.  Methods do not
+$ need to be imported since they belong to objects.
+
+$ Anyhoo, flat package system; non-heirarchical.  Packages are
+$ declared with the "in" directive, and imported with the "import"
+$ and "use" directives.  "use" just makes a package avaliable through
+$ the poor overloaded : operator.  "import" effectively imports
+$ it into the local namespace.
+in Foo
+use IO
+
+class Bop ():
+   + foo:
+      IO:println "Foo!"
+
+in Bar
+import IO
+
+class Bop ():
+   + foo:
+      IO:println "Bar!"
+
+in Quux
+import Foo
+use Bar
+
+var x <- new Bop        $ Foo:Bop
+var y <- new Bar:Bop    $ Bar:Bop, of course.
+foo x                   $ Prints "Foo!"
+foo y                   $ Prints "Bar!"
+
+$ Packages can hide local globals, constants and classes through
+$ the use of export-lists.
+in Foo
+export a, c
+
+global a <- 10
+global b <- 20
+global c <- 30
+
+in Bar
+import Foo
+
+a       $ is Foo:a
+b       $ Compile-time error!
+Foo:b   $ Also error!
+c       $ Foo:c
+
+ 
+$ Variable-length, keyword and optional args.
+$ These are pretty simple.
+$ Main notes: Only one var-length arg, which must be at the end of
+$ the var list, and any keyword/optional args must be after regular args.
+$ keyword
++ foo x y=10 ~z ~a=20 d=[]:
+   ...
+$ So in this example, x is regular, y is optional z and a are keyword,
+$ a is also optional, and d is variable-length (returns a list of args)
+
+
+$ pass does nothing.
++ blah x:
+   if x > 10:
+      pass
+   else:
+      x
+   x + 91
+
+
+$ Blocks
+$ Blocks are basically anonymous functions.
+$ They are also STATIC CLOSURES.  Any variable from their declaring scope
+$ that they refer to will be captured and preserved by them.
+$ They are executed by the "call" method.
++ makeAdder x:
+   {|y | x + y|};
+x <- makeAdder 10
+y <- makeAdder 1
+call x 10       => 20
+call x 30       => 40
+call y 10       => 11
+call y 30       => 31
+
+
+$ Optional type-checking
+$ The idea here is that you can declare and check at compile-time
+$ what messages a class responds to, what type args it takes, and
+$ what type args it returns.
+$ This is purely in the interests of efficiency though, being
+$ entirely optional.
+$ ...And I'm really not sure how it'll compile yet.  Oh well.
+$ Well, or even work with the syntax.  Meh.  Leave it for now.
+
+
+$ Global variables and constants.
+$ These are also pretty simple.  They declare a variable or constant
+$ for the scope of a package.
+global v <- 10
+const FOO <- 20
+
++ testy:
+   print "v: ~A, FOO: ~A~%" v FOO
+   v <- FOO
+   FOO <- v             $ Compile-time error!
+   print "v: ~A, FOO: ~A~%" v FOO
+
+$ Boolean and binary logic
+$ and, or, not, xor
+$ & | ! ~
+
+
+$ Characters and strings
+$ No characters, only strings?  Possibly.
+$ No, characters have to exist for the inheritance to work properly.
+
+
+$ C interface
+$ Not sure about this yet, but it WILL exist.
+XXX
+
+$ Compilation, linking and interface files
+foo.obv = source
+foo.obo = object (in the binary sense, not the OO sense)
+foo.obi = object interface
+foo.obl = library  (or just .a???)
+foo.obp = package/library interface
+Interface files must contain:
+*which packages they use/import
+*which classes they define and what data they have
+*which globals and constants they define
+*what exceptions are thrown
+*what the signatures of the functions are
+*documentation, probably
+
+A package is either a library file or a directory full of object
+files.  In both cases a .obp file must exist.
+Programs:
+obvc: compiler
+obvl: linker (probably python or sh around ld)
+obvpp: preprocessor (can be integrated into songc)
+needs ocaml suite to compile, ocaml and python to run
+
+
+
+
+TODO:
+Private variables, both class and instance.
+Private methods, both class and instance.
+Array slicing.
+Method names are mangled a la ObjC to show arg number?  And type?  DEFINATELY mangled to show package and object.
+Write a reference at some point, dammit!
+foreach just uses the Iterator interface, perhaps?  Yeah!
+
+
+
+SYNTAX:
+Keywords:
+class + - : ( ) [ ] [| |] { } | var global constant ~ self super
+in use import export ,
++ - / * % and or not xor % | !  << >> = == /= /==
+if elif else while for to by foreach return continue break
+" '
+raise try catch finally
+<- <-+ <-- <-* <-/ <-%
+indent dedent
+^
+
+
+
+Special method-call operators:
+<       lt
+>       gt
+<=      lte
+>=      gte
+=       eq
+<<      shl
+>>      shr
++       add
+-       sub
+*       mul
+/       div
+%       mod
+^       concat
+
+
+The last five can also be combined with assignment, ie:
+x <-+ y         => x <- x + y
+x <-* y         => x <- x * y

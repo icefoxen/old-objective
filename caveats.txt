@@ -1,0 +1,23 @@
+The internal string encoding for Song should all be UTF-8, and the library
+functions should reflect this.  However, it isn't, and they don't, yet.  And I'll probably put it off forever unless I have reason to do otherwise, so if you need it, please bug me about it rather than blindly waiting for another version.
+
+There are no assign-and-shift statements (ie <-<< and <->>) 'cause that's just too many damn arrows.  Requests may alter this.
+
+Remember, you MUST end blocks with a ";".
+
+You can NOT put more than one package in a single file.  It just won't work.  Mainly 'cause I'm lazy.  'Sides, the guiding philosophy is supposed to be Keep It Simple, Stupid.
+
+The var-length arg should be at the END of any var-list, but the parser does NOT check for this yet.
+
+The line-tracking in error reports is somewhat approximate.
+
+I need to re-write the indent parser bit in Ocaml.  Later, since Python really IS better-suited to such string-wonking.
+I need to fix having escape characters in strings.  It appears to work fine in characters.
+
+I'm making no promises on any kind of source or binary compatability between versions.  By version 1.0 I should have it nailed down pretty firmly, but this isn't version 1.0.
+
+I strongly advise against using ANY symbols in your program that start with an underscore (_).  The compiler uses symbols starting with an underscore for special values, ie _INDENT, _DEDENT, _file, _NONE, _UNKNOWN.  Underscores in the middle and end of a symbol is fine.
+
+The lexer doesn't handle strings quite right.
+
+I need to add built-in support for versioning, a la ObjC and D.  Later.  KISS.

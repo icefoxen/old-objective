@@ -1,0 +1,8 @@
+#!/bin/sh
+
+FILES="util.ml errorReport.ml syntree.ml parser.mli parser.ml lexer.ml \
+       package.ml main.ml"
+
+ocamlyacc -v *.mly
+ocamllex *.mll
+ocamlc -c $FILES

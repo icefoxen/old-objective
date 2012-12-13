@@ -1,0 +1,122 @@
+in Testy;
+import foo;
+use bop, bar, foo;
+export baz, beep, quux;
+
+global x <- 10;
+global y <- 20;
+const ZED <- "Hello there!";
+
+
+class Foo (alpha : beta, gamma, delta):
+   var a;
+   var (b: Int) <- 10;
+   var (c: Char) <- 'c';
+
+   - foo a b:
+      var n <- 10;
+      var m <- 205;
+      10;
+      20;
+      30;
+      if foo:
+         bar;
+
+      if bar:
+         foo;
+      elif bop:
+         beep;
+      else:
+         bop;
+
+      if bop:
+         foo;
+      else:
+         bar;
+
+   + bar:
+      'a';
+      'b';
+      'c';
+      1 + 2 * 3;
+      (1 + 2 - 3 * f.i) and 6 + s[12];
+      (foo 10);
+      (bar 20);
+      (bop obj a:10 b:20);
+
+      
+
+
+class Bar (Foo):
+   var quux;
+   var bax;
+
+   - test:
+      var x <- 10;
+      var y <- [10, 20, 30, 40];
+      var z <- {1:'a', 2:'b', 3:'c'};
+      while x:
+         (print "foo");
+         foreach x in y:
+            (format "~A" x);
+            
+         for x <- 1 to 10:
+            "Hello!\n";
+            if foo:
+               return;
+            elif bar:
+               return foo;
+            else:
+               break;
+
+         for y <- 0 to -100 by -5:
+            x;
+            if y:
+               continue;
+   - test2 foo (bar:Int) (bop:Char)='a':
+      
+      var n <- {| x y: 
+      x; 
+      y;
+      if x:
+         y;
+      else:
+         x;
+      |};
+      var m <- {| x: x + n + 10; |};
+      try:
+         if foo:
+            raise (new Exception);
+      with x:
+         foo;
+
+      try:
+         if foo:
+            raise (new Exception);
+      with x:
+         foo;
+      finally:
+         (print "bar");
+
+      try:
+         if foo:
+            raise (new Exception);
+      finally:
+         (print "bop");
+
+   - (quux: ReturnType) a b (c:String)="Stringy" (d:Array)=[]:
+      b + c;
+      b - c * d | e & f ^ g ++ x - (~f) * foo;
+      (add foo) + bop ++ (foo bar bop);
+      f[10];
+      y.z;
+
+   + foo a=10 b=20 ~varargs: ;
+
+interface Foo ():
+   + foo x y:
+   - bar y x:
+
+interface Bar (Foo):
+   - bop a b:
+   + quux b a: 

@@ -1,0 +1,30 @@
+in Testy;
+import foo;
+use bop;
+use bar;
+use foo;
+export baz;
+export beep;
+export quux;
+global (x: _UNKNOWN) ;
+global (y: _UNKNOWN) ;
+const (ZED: _UNKNOWN) ;
+class Foo (alpha: delta, gamma, beta):
+   var (a: _UNKNOWN) ;
+   var (b: Int) ;
+   var (c: Char) ;
+   - (foo: _UNKNOWN) (a: _UNKNOWN) (b: _UNKNOWN) : ;
+   + (bar: _UNKNOWN) : ;
+class Bar (Foo):
+   var (quux: _UNKNOWN) ;
+   var (bax: _UNKNOWN) ;
+   - (test: _UNKNOWN) : ;
+   - (test2: _UNKNOWN) (foo: _UNKNOWN) (bar: Int) (bop: Char) : ;
+   - (quux: ReturnType) (a: _UNKNOWN) (b: _UNKNOWN) (c: String) (d: Array) : ;
+   + (foo: _UNKNOWN) (a: _UNKNOWN) (b: _UNKNOWN) ~varargs : ;
+interface Foo (_NONE):
+   + (foo: _UNKNOWN) (x: _UNKNOWN) (y: _UNKNOWN) : ;
+   - (bar: _UNKNOWN) (y: _UNKNOWN) (x: _UNKNOWN) : ;
+interface Bar (Foo):
+   - (bop: _UNKNOWN) (a: _UNKNOWN) (b: _UNKNOWN) : ;
+   + (quux: _UNKNOWN) (b: _UNKNOWN) (a: _UNKNOWN) : ;

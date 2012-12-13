@@ -1,0 +1,9 @@
+#!/bin/sh
+rm -rf *~
+rm -rf *.cmo
+rm -rf *.cmi
+rm -rf *.cmx
+rm -rf *.o
+rm -rf parser.ml parser.mli lexer.ml parser.output
+rm -rf a.out obvc
+rm -rf *.pp
